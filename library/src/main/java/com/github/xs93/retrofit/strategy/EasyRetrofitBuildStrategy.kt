@@ -5,7 +5,6 @@ import com.github.xs93.retrofit.EasyRetrofit
 import com.github.xs93.retrofit.cookie.CookieJarManager
 import com.github.xs93.retrofit.cookie.SharedPreferencesCookieStore
 import com.github.xs93.retrofit.interceptor.DomainInterceptor
-import com.itkacher.okprofiler.BuildConfig
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import okhttp3.Cache
 import okhttp3.OkHttpClient
@@ -40,7 +39,7 @@ class EasyRetrofitBuildStrategy : IRetrofitBuildStrategy {
             addInterceptor(DomainInterceptor())
             cache(cache)
             cookieJar(CookieJarManager(SharedPreferencesCookieStore(context)))
-            if (BuildConfig.DEBUG) {
+            if (EasyRetrofit.isOpenOkHttpProfiler()) {
                 addInterceptor(OkHttpProfilerInterceptor())
             }
         }

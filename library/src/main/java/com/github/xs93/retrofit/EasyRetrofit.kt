@@ -21,11 +21,18 @@ object EasyRetrofit {
     private var mApp: Context? = null
     private var mBaseUrl: String? = null
     private var mStrategy: IRetrofitBuildStrategy? = null
+    private var mOpenOkHttpProfiler: Boolean = false
 
-    fun init(context: Context, baseUrl: String, strategy: IRetrofitBuildStrategy? = null) {
+    fun init(
+        context: Context,
+        baseUrl: String,
+        strategy: IRetrofitBuildStrategy? = null,
+        openOkHttpProfiler: Boolean = false,
+    ) {
         mApp = context.applicationContext
         mBaseUrl = baseUrl
         mStrategy = strategy
+        mOpenOkHttpProfiler = openOkHttpProfiler
     }
 
     fun getApp(): Context {
@@ -40,6 +47,10 @@ object EasyRetrofit {
         return mStrategy ?: EasyRetrofitBuildStrategy().also {
             mStrategy = it
         }
+    }
+
+    fun isOpenOkHttpProfiler(): Boolean {
+        return mOpenOkHttpProfiler
     }
 
     fun <T> create(retrofitClient: IRetrofitClient = EasyRetrofitClient, service: Class<T>): T {
