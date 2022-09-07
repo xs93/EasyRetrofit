@@ -8,11 +8,20 @@ package com.github.xs93.retrofit.model
  * @date   2022/9/2-14:37
  * @email  466911254@qq.com
  */
-sealed class RequestState<out T> {
+sealed class RequestState<out T : Any> {
 
     object Loading : RequestState<Nothing>()
 
-    data class Success<out T>(val data: T? = null) : RequestState<T>()
+    data class Success<out T : Any>(val data: T? = null) : RequestState<T>()
 
-    data class Error(val throwable: Throwable) : RequestState<Nothing>()
+    data class Error(val exception: Exception) : RequestState<Nothing>()
+
+    override fun toString(): String {
+
+        return when (this) {
+            is Loading -> "Loading"
+            is Success -> "Success[data = $data]"
+            is Error -> "Error[ throwable = $exception]"
+        }
+    }
 }
