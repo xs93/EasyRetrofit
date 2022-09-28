@@ -63,7 +63,7 @@ fun Cookie.toHexString(): String? {
 
 
 fun Cookie.isExpired(): Boolean {
-    return persistent || expiresAt > System.currentTimeMillis()
+    return expiresAt < System.currentTimeMillis()
 }
 
 

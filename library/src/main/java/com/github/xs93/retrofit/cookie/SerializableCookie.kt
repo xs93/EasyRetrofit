@@ -23,6 +23,8 @@ class SerializableCookie constructor(
 
     companion object {
         private const val serialVersionUID = -86L
+
+        private const val NOT_VALUE_EXPIRES_AT = -1L
     }
 
     @Transient
@@ -49,7 +51,9 @@ class SerializableCookie constructor(
         val cookie = Cookie.Builder().apply {
             name(name)
             value(value)
-            expiresAt(expiresAt)
+            if (expiresAt != NOT_VALUE_EXPIRES_AT) {
+                expiresAt(expiresAt)
+            }
             path(path)
             if (hostOnly) hostOnlyDomain(domain) else domain(domain)
             if (secure) {
@@ -67,12 +71,11 @@ class SerializableCookie constructor(
         out.defaultWriteObject()
         out.writeObject(cookie.name)
         out.writeObject(cookie.value)
-        out.writeLong(cookie.expiresAt)
+        out.writeLong(if (cookie.persistent) cookie.expiresAt else NOT_VALUE_EXPIRES_AT)
         out.writeObject(cookie.domain)
         out.writeObject(cookie.path)
         out.writeBoolean(cookie.secure)
         out.writeBoolean(cookie.httpOnly)
-        out.writeBoolean(cookie.persistent)
         out.writeBoolean(cookie.hostOnly)
     }
 }
