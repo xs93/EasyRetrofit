@@ -26,7 +26,7 @@ object EasyRetrofit {
     fun init(
         context: Context,
         baseUrl: String,
-        strategy: IRetrofitBuildStrategy? = null,
+        strategy: IRetrofitBuildStrategy? = EasyRetrofitBuildStrategy(),
         openOkHttpProfiler: Boolean = false,
     ) {
         mApp = context.applicationContext

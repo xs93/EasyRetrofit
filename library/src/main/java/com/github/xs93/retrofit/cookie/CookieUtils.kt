@@ -17,23 +17,32 @@ import kotlin.experimental.and
  */
 
 fun String.toByteArray(): ByteArray {
-    check(length % 2 == 0) { "Must have an even length" }
-    return chunked(2)
-        .map {
-            it.toInt(16).toByte()
-        }
-        .toByteArray()
+    val result = uppercase()
+    val byteArray = ByteArray(length / 2)
+    val hexChar = result.toCharArray()
+    for (i in indices step 2) {
+        byteArray[i / 2] =
+            ((charToByte(hexChar[i]).toInt() shl 4) or (charToByte(hexChar[i + 1]).toInt())).toByte()
+    }
+    return byteArray
+}
+
+
+private fun charToByte(c: Char): Byte {
+    return "0123456789ABCDEF".indexOf(c).toByte()
 }
 
 fun ByteArray.toHexString(): String {
-    val hexArray = "0123456789ABCDEF".toCharArray()
-    val hexChars = CharArray(size * 2)
-    for (index in indices) {
-        val v = (this[index] and 0x0f.toByte()).toInt()
-        hexChars[index * 2] = hexArray[v ushr 4]
-        hexChars[index * 2 + 1] = hexArray[v and 0x0f]
+    val sb: StringBuilder = StringBuilder()
+    for (element in this) {
+        val v = element.toInt() and 0xff
+        val hv = Integer.toHexString(v)
+        if (hv.length < 2) {
+            sb.append('0')
+        }
+        sb.append(hv)
     }
-    return String(hexChars)
+    return sb.toString()
 }
 
 
@@ -52,13 +61,21 @@ fun String.toCookie(): Cookie? {
 fun Cookie.toHexString(): String? {
     val serializableCookie = SerializableCookie(this)
     val baos = ByteArrayOutputStream()
-    try {
-        val oos = ObjectOutputStream(baos)
+    var oos: ObjectOutputStream? = null
+    val result = try {
+        oos = ObjectOutputStream(baos)
         oos.writeObject(serializableCookie)
+        baos.toByteArray().toHexString()
     } catch (e: Exception) {
-        return null
+        null
+    } finally {
+        try {
+            oos?.close()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
     }
-    return baos.toByteArray().toHexString()
+    return result
 }
 
 

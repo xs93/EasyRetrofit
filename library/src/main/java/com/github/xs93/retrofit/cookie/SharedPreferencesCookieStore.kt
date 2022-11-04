@@ -125,6 +125,7 @@ class SharedPreferencesCookieStore(context: Context) : CookieStore {
             cookies[url.host] = ConcurrentHashMap<String, Cookie>()
         }
         cookies[url.host]!![cookieToken] = cookie
+        val text = TextUtils.join(",", cookies[url.host]!!.keys)
         val editor = cookieSP.edit()
         editor.putString(url.host, TextUtils.join(",", cookies[url.host]!!.keys))
         editor.putString(COOKIE_NAME_PREFIX + cookieToken, cookie.toHexString())
@@ -135,7 +136,7 @@ class SharedPreferencesCookieStore(context: Context) : CookieStore {
         val prefsMap: Map<String, *> = cookieSP.all
         for (entry in prefsMap.entries) {
             if (entry.value != null && !entry.key.startsWith(COOKIE_NAME_PREFIX)) {
-                val cookieNames = TextUtils.split(entry.value as String, "")
+                val cookieNames = TextUtils.split(entry.value as String, ",")
                 for (cookieName in cookieNames) {
                     val encodeCookieString =
                         cookieSP.getString(COOKIE_NAME_PREFIX + cookieName, null)

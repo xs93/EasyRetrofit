@@ -1,5 +1,7 @@
 package com.github.xs93.retrofit.retorfit
 
+import okhttp3.OkHttpClient
+
 /**
  *
  *
@@ -17,4 +19,6 @@ interface IRetrofitClient {
      * @return
      */
     fun <T> create(service: Class<T>): T
+
+    fun getOkHttpClient(): OkHttpClient
 }

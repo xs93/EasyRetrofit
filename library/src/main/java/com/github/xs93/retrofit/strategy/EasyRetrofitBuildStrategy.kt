@@ -7,6 +7,7 @@ import com.github.xs93.retrofit.cookie.SharedPreferencesCookieStore
 import com.github.xs93.retrofit.interceptor.DomainInterceptor
 import com.localebro.okhttpprofiler.OkHttpProfilerInterceptor
 import okhttp3.Cache
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import retrofit2.CallAdapter
 import retrofit2.Converter
@@ -23,6 +24,7 @@ import java.util.concurrent.TimeUnit
  * @email  466911254@qq.com
  */
 class EasyRetrofitBuildStrategy : IRetrofitBuildStrategy {
+
     override fun okHttpClient(): OkHttpClient {
         val context: Context = EasyRetrofit.getApp()
         val cacheFile = File(context.cacheDir, "OkHttpCache")
@@ -36,9 +38,9 @@ class EasyRetrofitBuildStrategy : IRetrofitBuildStrategy {
             writeTimeout(30, TimeUnit.SECONDS)
             readTimeout(30, TimeUnit.SECONDS)
             retryOnConnectionFailure(true)
-            addInterceptor(DomainInterceptor())
             cache(cache)
             cookieJar(CookieJarManager(SharedPreferencesCookieStore(context)))
+            addInterceptor(DomainInterceptor())
             if (EasyRetrofit.isOpenOkHttpProfiler()) {
                 addInterceptor(OkHttpProfilerInterceptor())
             }

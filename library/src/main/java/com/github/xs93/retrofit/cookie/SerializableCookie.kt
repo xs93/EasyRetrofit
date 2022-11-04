@@ -37,7 +37,6 @@ class SerializableCookie constructor(
 
     @Throws(IOException::class, ClassNotFoundException::class)
     private fun readObject(ois: ObjectInputStream) {
-        ois.defaultReadObject()
         val name: String = ois.readObject() as String
         val value: String = ois.readObject() as String
         val expiresAt: Long = ois.readLong()
@@ -45,7 +44,6 @@ class SerializableCookie constructor(
         val path: String = ois.readObject() as String
         val secure = ois.readBoolean()
         val httpOnly = ois.readBoolean()
-        val persistent = ois.readBoolean()
         val hostOnly = ois.readBoolean()
 
         val cookie = Cookie.Builder().apply {
@@ -68,7 +66,6 @@ class SerializableCookie constructor(
 
     @Throws(IOException::class)
     private fun writeObject(out: ObjectOutputStream) {
-        out.defaultWriteObject()
         out.writeObject(cookie.name)
         out.writeObject(cookie.value)
         out.writeLong(if (cookie.persistent) cookie.expiresAt else NOT_VALUE_EXPIRES_AT)
